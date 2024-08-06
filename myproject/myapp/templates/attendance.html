@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Attendance</h2>
+  
+  <!-- Section Filter Form -->
+  <form method="get" action="{% url 'teacher' %}">
+    <div class="form-group">
+      <label for="section">Select Section:</label>
+      <select name="section" id="section" class="form-control">
+        <option value="">-- Select Section --</option>
+        {% for section in section_form.fields.section.choices %}
+          <option value="{{ section.0 }}" {% if request.GET.section == section.0 %}selected{% endif %}>
+            {{ section.1 }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Filter Section</button>
+  </form>
+
+  <!-- Attendance Submission Form -->
+  {% if students %}
+    <h3>Students in Section {{ request.GET.section }}</h3>
+    <form method="post" action="{% url 'teacher' %}">
+      {% csrf_token %}
+      <ul>
+        {% for student in students %}
+          <li>
+            {{ student.name }}
+            <label>
+              <input type="radio" name="attendance_{{ student.id }}" value="present" {% if request.POST.attendance_{{ student.id }} == 'present' %}checked{% endif %}> Present
+            </label>
+            <label>
+              <input type="radio" name="attendance_{{ student.id }}" value="absent" {% if request.POST.attendance_{{ student.id }} == 'absent' %}checked{% endif %}> Absent
+            </label>
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="submit" class="btn btn-primary">Submit Attendance</button>
+    </form>
+  {% else %}
+    <p>No students found for the selected section.</p>
+  {% endif %}
+{% endblock %}

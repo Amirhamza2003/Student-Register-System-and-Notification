@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Send WhatsApp Messages{% endblock %}
+
+{% block content %}
+    <h2>Send WhatsApp Messages</h2>
+    <form method="post" action="{% url 'send_messages' %}">
+        {% csrf_token %}
+        <ul>
+            {% for student in students %}
+                <li>{{ student.name }} ({{ student.phone_number }})</li>
+            {% endfor %}
+        </ul>
+        <button type="submit" class="btn btn-primary">Send Messages</button>
+    </form>
+{% endblock %}

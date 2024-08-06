@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Attendance</h2>
+  
+  <form method="get" action="{% url 'teacher' %}">
+    {{ section_form.as_p }}
+    <button type="submit" class="btn btn-primary">Filter Section</button>
+  </form>
+
+  {% if students %}
+    <h3>Students in Section {{ request.GET.section }}</h3>
+    <form method="post" action="{% url 'mark_absent' %}">
+      {% csrf_token %}
+      <ul>
+        {% for student in students %}
+          <li>
+            {{ student.name }}
+            <input type="radio" name="attendance_{{ student.id }}" value="present"> Present
+            <input type="radio" name="attendance_{{ student.id }}" value="absent"> Absent
+          </li>
+        {% endfor %}
+      </ul>
+      <button type="submit" class="btn btn-primary">Submit Attendance</button>
+    </form>
+  {% else %}
+    <p>No students found for the selected section.</p>
+  {% endif %}
+{% endblock %}
